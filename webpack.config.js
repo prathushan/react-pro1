@@ -8,14 +8,9 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
+    publicPath: "/",  // ✅ Ensures React Router works in production
   },
   mode: "development",
-  devServer: {
-    static: path.resolve(__dirname, "dist"),
-    hot: true,
-    port: 3000,
-    historyApiFallback: true,
-  },
   module: {
     rules: [
       {
@@ -49,6 +44,6 @@ module.exports = {
     static: path.resolve(__dirname, "dist"),
     hot: true,
     port: 3000,
-    historyApiFallback: true,  // ✅ Ensures React Router works!
+    historyApiFallback: true,  // ✅ Prevents "empty page" issue with React Router
   },
 };
