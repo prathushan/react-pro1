@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
+const isDevelopment = process.env.NODE_ENV !== "production"; // ✅ Check environment
+
 module.exports = {
   entry: "./src/index.js",
   output: {
@@ -10,7 +12,7 @@ module.exports = {
     filename: "bundle.js",
     publicPath: "/",  // ✅ Ensures React Router works in production
   },
-  mode: "development",
+  mode: isDevelopment ? "development" : "production",
   module: {
     rules: [
       {
@@ -20,7 +22,7 @@ module.exports = {
           loader: "babel-loader",
           options: {
             presets: ["@babel/preset-env", "@babel/preset-react"],
-            plugins: ["react-refresh/babel"],
+            plugins: isDevelopment ? ["react-refresh/babel"] : [],  // ✅ Only use in development
           },
         },
       },
@@ -35,8 +37,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
-    new ReactRefreshWebpackPlugin(),
-  ],
+    isDevelopment && new ReactRefreshWebpackPlugin(),  // ✅ Only add in development
+  ].filter(Boolean), // Removes `false` values
   resolve: {
     extensions: [".js", ".jsx"],
   },
@@ -44,6 +46,6 @@ module.exports = {
     static: path.resolve(__dirname, "dist"),
     hot: true,
     port: 3000,
-    historyApiFallback: true,  // ✅ Prevents "empty page" issue with React Router
+    historyApiFallback: true,  // ✅ Fixes empty page with React Router
   },
 };
